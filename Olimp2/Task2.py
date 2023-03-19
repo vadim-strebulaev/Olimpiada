@@ -1,30 +1,49 @@
-from operator import sub
-k = int(input())
-mas = []
-for i in range(k):
-    a = int(input())
-    mas.append(list(map(int, input().split())))
-data = []
-for test in range(len(mas)):
-    data = []
-    field = mas[test]
-    a = len(field)
-    while field != [0] * a:
-        min1 = max(field)
-        first = a - 1
-        second = 0
-        for i in range(a):
-            if field[i] <= min1 and field[i] != 0:
-                min1 = field[i]
-        for i in range(a):
-            if field[i] >= min1 and first == a - 1 and field[i] != 0:
-                first = i 
-            if field[i] == 0 and first < i:
-                break
+from datetime import datetime
+import random
+random.seed(10)
+geometry = [random.randint(0,5) for _ in range(1_000_000)]
+a = len(geometry)
+
+def find_hill(geometry, firstIndex, lastIndex,  base, hills):
+    max = 0
+    leftBoundary = -1
+    rightBoundary = -1
+    height = -1
+    for i in range(firstIndex, lastIndex):
+        localHeight = geometry[i] - base
+        if localHeight > 0:
+            if height == -1:
+                height = localHeight
+            elif height > localHeight:
+                height = localHeight
             else:
-                second = i
-        data.append([first + 1, second + 1, min1])
-        field = list(map(sub, field, [min1 if i >= first and i <= second else 0 for i in range(a)]))
-    print(len(data))
-    for i in range(len(data)):
-        print(*data[i])
+                max = localHeight
+            if leftBoundary < 0:
+                leftBoundary = i
+        elif leftBoundary >= 0:
+                rightBoundary = i
+                break
+    if rightBoundary == -1:
+        rightBoundary = lastIndex
+    if height > 0:
+        hills.append([leftBoundary + 1, rightBoundary, height])
+        # print(firstIndex, rightBoundary, lastIndex, height)
+        if height < max:
+            find_hill(geometry, firstIndex, rightBoundary, base + height, hills)
+    return rightBoundary
+
+def impl1():
+    hills = []
+    rightBoundary = 0
+    while True:
+        rightBoundary = find_hill(geometry, rightBoundary, a, 0, hills)
+        if rightBoundary >= a:
+            break
+    return hills
+
+start = datetime.now()
+hills = impl1()
+duration = datetime.now() - start
+print(hills)
+
+print(duration)
