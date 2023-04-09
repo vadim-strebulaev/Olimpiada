@@ -4,13 +4,14 @@ lengths = [length] * heigth
 field = []
 way = [[0, 0]]
 for i in range(length):
-    field.append([length] * 4)
+    field.append([0] * 4)
 field[0][0] = 0
 
 for meteor in range(count):
     i, j = map(int, input().split())
     field[i - 1][j - 1] = "M"
 nowCords = [0, 0]
+print(*field, sep="\n")
 def go (data, nowCords):
     if nowCords[0] != length - 1 and data[nowCords[0] + 1][nowCords[1]] != "M" and not [nowCords[0] + 1, nowCords[1]] in way:
         nowCords[0] += 1
@@ -74,6 +75,28 @@ for i in range(len(way)):
     for j in range(len(way[i])):
         print(way[i][j], end=" ")
     print("")
+
+
+"""
+Tests
+10 4
+2 1
+2 2 
+2 3
+4 4
+
+
+
+10 7
+2 1
+2 2
+2 3
+5 4
+5 3
+5 2
+4 2
+
+"""
 
 
 """
